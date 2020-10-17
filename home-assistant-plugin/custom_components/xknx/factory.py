@@ -214,6 +214,7 @@ def _create_sensor(knx_module: XKNX, config: ConfigType) -> XknxSensor:
         name=config[CONF_NAME],
         group_address_state=config[SensorSchema.CONF_STATE_ADDRESS],
         sync_state=config[SensorSchema.CONF_SYNC_STATE],
+        ignore_internal_state=config[SensorSchema.CONF_IGNORE_INTERNAL_STATE],
         value_type=config[CONF_TYPE],
     )
 

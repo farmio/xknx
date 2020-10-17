@@ -19,14 +19,15 @@ class Sensor(Device):
         xknx,
         name,
         group_address_state=None,
-        sync_state=True,
-        value_type=None,
+        sync_state: bool = True,
+        ignore_internal_state: bool = False,
+        value_type: str = None,
         device_updated_cb=None,
     ):
         """Initialize Sensor class."""
         # pylint: disable=too-many-arguments
         super().__init__(xknx, name, device_updated_cb)
-
+        self.ignore_internal_state = ignore_internal_state
         self.sensor_value = RemoteValueSensor(
             xknx,
             group_address_state=group_address_state,
@@ -45,6 +46,7 @@ class Sensor(Device):
         """Initialize object from configuration structure."""
         group_address_state = config.get("group_address_state")
         sync_state = config.get("sync_state", True)
+        ignore_internal_state = config.get("ignore_internal_state", False)
         value_type = config.get("value_type")
 
         return cls(
@@ -52,11 +54,18 @@ class Sensor(Device):
             name,
             group_address_state=group_address_state,
             sync_state=sync_state,
+            ignore_internal_state=ignore_internal_state,
             value_type=value_type,
         )
 
     async def process_group_write(self, telegram):
         """Process incoming and outgoing GROUP WRITE telegram."""
+        await self.sensor_value.process(
+            telegram, always_callback=self.ignore_internal_state
+        )
+
+    async def process_group_response(self, telegram):
+        """Process incoming GroupValueResponse telegrams."""
         await self.sensor_value.process(telegram)
 
     def unit_of_measurement(self):

@@ -15,6 +15,7 @@ from homeassistant.const import (
 import homeassistant.helpers.config_validation as cv
 
 from .const import (
+    CONF_IGNORE_INTERNAL_STATE,
     CONF_RESET_AFTER,
     CONF_STATE_ADDRESS,
     CONF_SYNC_STATE,
@@ -85,7 +86,7 @@ class BinarySensorSchema:
 
     CONF_STATE_ADDRESS = CONF_STATE_ADDRESS
     CONF_SYNC_STATE = CONF_SYNC_STATE
-    CONF_IGNORE_INTERNAL_STATE = "ignore_internal_state"
+    CONF_IGNORE_INTERNAL_STATE = CONF_IGNORE_INTERNAL_STATE
     CONF_CONTEXT_TIMEOUT = "context_timeout"
     CONF_RESET_AFTER = CONF_RESET_AFTER
 
@@ -306,6 +307,7 @@ class NotifySchema:
 class SensorSchema:
     """Voluptuous schema for KNX sensors."""
 
+    CONF_IGNORE_INTERNAL_STATE = CONF_IGNORE_INTERNAL_STATE
     CONF_STATE_ADDRESS = CONF_STATE_ADDRESS
     CONF_SYNC_STATE = CONF_SYNC_STATE
     DEFAULT_NAME = "KNX Sensor"
@@ -318,6 +320,7 @@ class SensorSchema:
                 cv.boolean,
                 cv.string,
             ),
+            vol.Optional(CONF_IGNORE_INTERNAL_STATE, default=False): cv.boolean,
             vol.Required(CONF_STATE_ADDRESS): cv.string,
             vol.Required(CONF_TYPE): vol.Any(int, float, str),
         }
